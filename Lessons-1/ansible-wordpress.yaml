@@ -1,0 +1,46 @@
+---
+- name: Install Docker and set up WordPress
+  hosts: all
+  remote_user: ec2-user
+  become: yes
+  tasks:
+    - name: Install required packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - docker
+        - python3-pip
+        - python3-setuptools
+      tags:
+        - install_packages
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+      tags:
+        - start_docker
+
+    - name: Pull and run WordPress container
+      docker_container:
+        name: wordpress
+        image: wordpress:latest
+        ports:
+          - "80:80"
+        volumes:
+          - /path/to/wordpress:/var/www/html
+        env:
+          WORDPRESS_DB_HOST: terraform-20230922160837877800000001.ccsof6gvipaz.us-east-1.rds.amazonaws.com
+          WORDPRESS_DB_USER: user
+          WORDPRESS_DB_PASSWORD: userroot
+          WORDPRESS_DB_NAME: db
+        restart_policy: always
+      tags:
+        - run_wordpress
+
+    
+
+        
+
