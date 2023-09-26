@@ -21,7 +21,6 @@ resource "aws_eip" "my_static_ip" {
 
 }
 
-
 resource "aws_db_instance" "my_base" {
   allocated_storage    = 10
   storage_type         = "gp2"
