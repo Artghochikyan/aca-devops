@@ -24,27 +24,27 @@
         - start_docker
 
 
-
-    - name: Set up SSH key
-  run: |
-    echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    chmod 600 ~/.ssh/id_rsa
-    ssh-keyscan -H your-ec2-instance-ip-or-dns >> ~/.ssh/known_hosts
-  env:
-    SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    - name: Deploy WordPress
-  hosts: all
-  become: yes
-  tasks:
-    - name: Copy WordPress files
-      ansible.builtin.copy:
-        src: /path/to/wordpress/files
-        dest: /var/www/html/
-      become: yes
-      remote_user: ec2-user
-      # Specify the private key file
-      ansible_ssh_private_key_file: ~/.ssh/id_rsa
+      
+  #  - name: Set up SSH key
+  #run: |
+  #  echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+  #  chmod 600 ~/.ssh/id_rsa
+   # ssh-keyscan -H your-ec2-instance-ip-or-dns >> ~/.ssh/known_hosts
+  #env:
+   # SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#
+ #   - name: Deploy WordPress
+  # hosts: all
+  # become: yes
+#   tasks:
+ #   - name: Copy WordPress files
+ #     ansible.builtin.copy:
+ #       src: /path/to/wordpress/files
+ #       dest: /var/www/html/
+ #     become: yes
+ #     remote_user: ec2-user
+ #     # Specify the private key file
+ #     ansible_ssh_private_key_file: ~/.ssh/id_rsa
  
    
 
