@@ -1,7 +1,6 @@
 #!/bin/sh
 echo "Running terraform"
-terraform init
-terraform apply
+terraform init && terraform apply -auto-approve -lock=false
 echo "Fetching ip from output"
 terraform output | awk -F'"' '/"/ {print $2}' > inventory
 echo "Running ansible-wordpress.yaml"
