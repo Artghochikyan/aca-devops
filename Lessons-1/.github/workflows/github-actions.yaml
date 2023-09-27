@@ -1,0 +1,85 @@
+name: Deploy WordPress on EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform-ansible:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Change this to your desired AWS region
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: Lessons-1
+
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
+        working-directory: Lessons-1
+
+      - name: Get EC2 Instance IP
+        id: get-instance-ip
+        run: |
+          echo "::set-output name=instance_ip::$(terraform output ec2_instance_ip)"
+        working-directory: Lessons-1 
+
+      - name: Wait for EC2 instance to be ready
+        run: |
+          until aws ec2 describe-instances \
+            --instance-ids $(terraform output ec2_instance_id) \
+            --query 'Reservations[0].Instances[0].State.Name' \
+            --output text | grep -q "running"; do
+              echo "Waiting for EC2 instance to be ready..."
+              sleep 10
+          done
+        working-directory: Lessons-1
+
+      - name: Set up Ansible
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10.12'
+
+      - name: Install Ansible
+        run: pip install ansible
+
+
+      - name: Create Ansible Inventory
+        run: echo "ec2_instance ansible_host=${{ steps.get-instance-ip.outputs.instance_ip }}" > inventory
+        working-directory: Lessons-1  
+
+      - name: Run Ansible playbook
+        run: ansible-playbook -i inventory ansible-wordpress.yaml
+        working-directory: Lessons-1
+
+
+      - name: Set up SSH key
+          run: |
+    echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    chmod 600 ~/.ssh/id_rsa
+    ssh-keyscan -H your-ec2-instance-ip-or-dns >> ~/.ssh/known_hosts
+          env:
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy WordPress
+       hosts: your-ec2-instance
+  become: yes
+  tasks:
+      - name: Copy WordPress files
+      ansible.builtin.copy:
+        src: /path/to/wordpress/files
+        dest: /var/www/html/
+      become: yes
+      remote_user: ec2-user
+      # Specify the private key file
+      ansible_ssh_private_key_file: ~/.ssh/id_rsa
