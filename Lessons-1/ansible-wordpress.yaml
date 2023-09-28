@@ -26,7 +26,7 @@
     - name: Pull and run WordPress container
       docker_container:
         name: wordpress
-        image: wordpress:latest
+        image: wordpress:beta-php8.2-fpm-alpine
         ports:
           - "80:80"
         volumes:
