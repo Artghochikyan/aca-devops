@@ -47,6 +47,7 @@ jobs:
 
       - name: Set up SSH key
         run: |
+          mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H "${{ steps.get-instance-ip.outputs.instance_ip }}" >> ~/.ssh/known_hosts
