@@ -65,7 +65,8 @@ jobs:
 
 
       - name: Create Ansible Inventory
-        run: echo "${{ steps.get-instance-ip.outputs.instance_ip }}" > inventory && /
+        run: | 
+          echo "${{ steps.get-instance-ip.outputs.instance_ip }}" > inventory 
           cat inventory
         working-directory: Lessons-1  
 
