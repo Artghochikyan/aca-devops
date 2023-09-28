@@ -65,7 +65,7 @@ jobs:
 
 
       - name: Create Ansible Inventory
-        run: echo "ec2_instance ansible_host=${{ steps.get-instance-ip.outputs.instance_ip }}" > inventory
+        run: echo "${{ steps.get-instance-ip.outputs.instance_ip }}" > inventory
         working-directory: Lessons-1  
 
       - name: Run Ansible playbook
