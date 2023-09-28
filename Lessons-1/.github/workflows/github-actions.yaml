@@ -72,8 +72,6 @@ jobs:
         run: cat inventory # Print the inventory file
         working-directory: Lessons-1
 
-      
-
       - name: Run Ansible playbook
         run: ansible-playbook -i inventory ansible-wordpress.yaml
         working-directory: Lessons-1
