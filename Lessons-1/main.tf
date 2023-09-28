@@ -1,3 +1,12 @@
+terraform {
+  backend "s3" {
+    bucket = "myartsbucketaws"
+    key    = "state"
+    region = "us-east-1"
+  }
+}
+
+
 data "aws_ami" "al" {
   most_recent = true
 

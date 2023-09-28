@@ -45,6 +45,16 @@ jobs:
           done
         working-directory: Lessons-1
 
+      - name: Set up SSH key
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H your-ec2-instance-ip-or-dns >> ~/.ssh/known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+ 
+
       - name: Set up Ansible
         uses: actions/setup-python@v2
         with:
