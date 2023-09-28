@@ -45,6 +45,16 @@ jobs:
           done
         working-directory: Lessons-1
 
+      - name: Set up SSH key
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "${{ steps.get-instance-ip.outputs.instance_ip }}" >> ~/.ssh/known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+ 
+
       - name: Set up Ansible
         uses: actions/setup-python@v2
         with:
@@ -53,9 +63,14 @@ jobs:
       - name: Install Ansible
         run: pip install ansible
 
+
       - name: Create Ansible Inventory
-        run: echo "ec2_instance ansible_host=${{ steps.get-instance-ip.outputs.instance_ip }}" > inventory
+        run: echo "${{ steps.get-instance-ip.outputs.instance_ip }}" > inventory
         working-directory: Lessons-1  
+
+      - name: Print Ansible Inventory
+        run: cat inventory # Print the inventory file
+        working-directory: Lessons-1
 
       - name: Run Ansible playbook
         run: ansible-playbook -i inventory ansible-wordpress.yaml
