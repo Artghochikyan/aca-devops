@@ -75,6 +75,3 @@ jobs:
       - name: Run Ansible playbook
         run: ansible-playbook -i inventory ansible-wordpress.yaml
         working-directory: Lessons-1
-
-
-    
