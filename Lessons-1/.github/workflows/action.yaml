@@ -50,7 +50,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H "35.153.114.24" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "3.88.132.48" >> ~/.ssh/known_hosts
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           
@@ -66,7 +66,7 @@ jobs:
 
 
       - name: Create Ansible Inventory
-        run: echo "35.153.114.24" > inventory
+        run: echo "3.88.132.48" > inventory
         working-directory: Lessons-1  
 
       - name: Print Ansible Inventory
